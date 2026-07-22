@@ -7,7 +7,7 @@
  */
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { BASE_URL, THRESHOLDS } from './config.js';
+import { BASE_URL, THRESHOLDS, DEFAULT_HEADERS } from './config.js';
 
 export const options = {
   stages: [
@@ -21,30 +21,26 @@ export const options = {
 };
 
 export default function () {
-  // Weighted mix: browsing the catalog happens far more often than logging
-  // in, which is a more realistic traffic shape than hitting every endpoint
-  // with equal frequency.
   const roll = Math.random();
 
   if (roll < 0.7) {
-    const res = http.get(`${BASE_URL}/productsList`);
+    const res = http.get(`${BASE_URL}/productsList`, { headers: DEFAULT_HEADERS });
     check(res, {
       'productsList status is 200': (r) => r.status === 200,
     });
   } else {
-    const res = http.post(`${BASE_URL}/verifyLogin`, {
-      email: 'not-a-real-user@example.com',
-      password: 'wrong-password-123',
-    });
-    // Intentionally using invalid credentials for load-testing purposes:
-    // this endpoint's read/validation path (hitting the user lookup) is
-    // exercised the same way regardless of whether the login succeeds,
-    // and it avoids creating/verifying real accounts under load, which
-    // would pollute the shared target's user database.
+    const res = http.post(
+      `${BASE_URL}/verifyLogin`,
+      {
+        email: 'not-a-real-user@example.com',
+        password: 'wrong-password-123',
+      },
+      { headers: DEFAULT_HEADERS }
+    );
     check(res, {
       'verifyLogin status is 200': (r) => r.status === 200,
     });
   }
 
-  sleep(Math.random() * 2 + 1); // 1-3s "think time" between actions
+  sleep(Math.random() * 2 + 1);
 }
