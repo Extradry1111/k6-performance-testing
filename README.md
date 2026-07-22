@@ -2,8 +2,8 @@
 
 Performance/load test scripts for the [automationexercise.com](https://automationexercise.com)
 API — the third leg of a QA portfolio that also includes a
-[Playwright functional automation framework](../qa-automation-framework) and a
-[Postman/Newman API collection](../postman-api-collection), all targeting
+[Playwright functional automation framework](https://github.com/Extradry1111/qa-automation-framework) and a
+[Postman/Newman API collection](https://github.com/Extradry1111/postman-api-collection), all targeting
 the same API from three different angles: functional correctness (Playwright
 + Postman) and performance under load (this project).
 
