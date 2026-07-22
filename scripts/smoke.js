@@ -7,7 +7,7 @@
  */
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { BASE_URL, THRESHOLDS } from './config.js';
+import { BASE_URL, THRESHOLDS, DEFAULT_HEADERS } from './config.js';
 
 export const options = {
   vus: 2,
@@ -16,7 +16,7 @@ export const options = {
 };
 
 export default function () {
-  const res = http.get(`${BASE_URL}/productsList`);
+  const res = http.get(`${BASE_URL}/productsList`, { headers: DEFAULT_HEADERS });
 
   check(res, {
     'status is 200': (r) => r.status === 200,
